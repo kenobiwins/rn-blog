@@ -1,10 +1,22 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { View, Text, StyleSheet, FlatList, TouchableOpacity } from "react-native";
 import { Context } from "../context/BlogContext";
 import { Feather } from "@expo/vector-icons";
 
 const IndexScreen = ({ navigation }) => {
-  const { state, deleteBlogPost } = useContext(Context);
+  const { state, deleteBlogPost, getBlogPosts } = useContext(Context);
+
+  useEffect(() => {
+    getBlogPosts();
+
+   const listener = navigation.addListener('didFocus', () => {
+      getBlogPosts()
+   })
+    
+    return () => {
+      listener.remove();
+    }
+  }, []);
 
   return (
     <View>
@@ -20,9 +32,7 @@ const IndexScreen = ({ navigation }) => {
                   <Text style={styles.title}>
                     {item.title} - {item.id}
                   </Text>
-                  <Text style={styles.title}>
-                    {item.content}
-                  </Text>
+                  <Text style={styles.title}>{item.content}</Text>
                   <TouchableOpacity
                     onPress={() => {
                       deleteBlogPost(item.id);
@@ -40,7 +50,7 @@ const IndexScreen = ({ navigation }) => {
   );
 };
 
-IndexScreen.navigationOptions = ({navigation}) => {
+IndexScreen.navigationOptions = ({ navigation }) => {
   return {
     headerRight: (
       <TouchableOpacity onPress={() => navigation.navigate("Create")}>

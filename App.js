@@ -2,10 +2,10 @@ import { createAppContainer } from "react-navigation";
 import { createStackNavigator } from "react-navigation-stack";
 
 import IndexScreen from "./src/screens/IndexScreen";
-import { Provider } from "./src/context/BlogContext";
+import { Provider as BlogProvider } from "./src/context/BlogContext";
+import { Provider as CommentsProvider } from "./src/context/CommentsContext";
 import ShowScreen from "./src/screens/ShowScreen";
 import CreateScreen from "./src/screens/CreateScreen";
-import { TouchableOpacity } from "react-native";
 import EditScreen from "./src/screens/EditScreen";
 
 const navigator = createStackNavigator(
@@ -27,9 +27,11 @@ const App = createAppContainer(navigator);
 
 export default () => {
   return (
-    <Provider>
-      <App />
-    </Provider>
+    <BlogProvider>
+      <CommentsProvider>
+        <App />
+      </CommentsProvider>
+    </BlogProvider>
   );
 };
 
