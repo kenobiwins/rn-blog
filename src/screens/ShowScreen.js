@@ -1,32 +1,18 @@
-import React from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import React, { useContext } from "react";
+import { View, Text } from "react-native";
 import { Context } from "../context/BlogContext";
-import { EvilIcons } from "@expo/vector-icons";
 
-export default function ShowScreen({ navigation }) {
-  const id = navigation.getParam("id");
+const ShowScreen = ({ route }) => {
+  const { state } = useContext(Context);
 
-  const { state } = React.useContext(Context);
+  const blogPost = state.find((blogPost) => blogPost.id === route.params.id);
 
-  const blogPost = state.find((blogPost) => blogPost.id === id);
   return (
     <View>
       <Text>{blogPost.title}</Text>
       <Text>{blogPost.content}</Text>
     </View>
   );
-}
-
-ShowScreen.navigationOptions = ({ navigation }) => {
-  return {
-    headerRight: (
-      <TouchableOpacity
-        onPress={() => navigation.navigate("Edit", { id: navigation.getParam("id") })}
-      >
-        <EvilIcons name="pencil" size={30} />
-      </TouchableOpacity>
-    ),
-  };
 };
 
-const styles = StyleSheet.create({});
+export default ShowScreen;

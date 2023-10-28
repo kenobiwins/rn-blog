@@ -1,44 +1,51 @@
-import { createAppContainer } from "react-navigation";
-import { createStackNavigator } from "react-navigation-stack";
-
+import React from "react";
+import { TouchableOpacity } from "react-native";
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
 import IndexScreen from "./src/screens/IndexScreen";
-import { Provider as BlogProvider } from "./src/context/BlogContext";
-import { Provider as CommentsProvider } from "./src/context/CommentsContext";
+import { Provider } from "./src/context/BlogContext";
 import ShowScreen from "./src/screens/ShowScreen";
 import CreateScreen from "./src/screens/CreateScreen";
 import EditScreen from "./src/screens/EditScreen";
+import { Feather, EvilIcons } from "@expo/vector-icons";
 
-const navigator = createStackNavigator(
-  {
-    Index: IndexScreen,
-    Show: ShowScreen,
-    Create: CreateScreen,
-    Edit: EditScreen,
-  },
-  {
-    initialRouteName: "Index",
-    defaultNavigationOptions: {
-      title: "Blogs",
-    },
-  }
-);
+const Stack = createStackNavigator();
 
-const App = createAppContainer(navigator);
-
-export default () => {
+export default function App() {
   return (
-    <BlogProvider>
-      <CommentsProvider>
-        <App />
-      </CommentsProvider>
-    </BlogProvider>
+    <Provider>
+      <NavigationContainer>
+        <Stack.Navigator screenOptions={{ headerTitle: "Blogs" }}>
+          <Stack.Screen
+            name="Index"
+            component={IndexScreen}
+            options={({ navigation }) => ({
+              headerRight: () => (
+                <TouchableOpacity onPress={() => navigation.navigate("Create")}>
+                  <Feather name="plus" size={30} />
+                </TouchableOpacity>
+              ),
+            })}
+          />
+          <Stack.Screen
+            name="Show"
+            component={ShowScreen}
+            options={({ route, navigation }) => ({
+              headerRight: () => (
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate("Edit", { id: route.params.id })
+                  }
+                >
+                  <EvilIcons name="pencil" size={35} />
+                </TouchableOpacity>
+              ),
+            })}
+          />
+          <Stack.Screen name="Create" component={CreateScreen} />
+          <Stack.Screen name="Edit" component={EditScreen} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </Provider>
   );
-};
-
-// return {
-//   headerRight: () => {
-//     <TouchableOpacity onPress={() => navigation.navigate("Create")}>
-//       <Feather name="plus" size={30}></Feather>
-//     </TouchableOpacity>;
-//   },
-// };
+}
